@@ -44,18 +44,12 @@ function priceGarments() {
 
 function filterData() {
 	axios
-		.get(`/api/garments?gender=${genderFilter}&season=${seasonFilter}`
-			// , {
-			// headers: {
-			//   'Authorization': `token ${access_token}`
-			// }
-			//  } 
-		)
+		.get(`/api/garments?gender=${genderFilter}&season=${seasonFilter}`)
 		.then(function (result) {
 			searchResultsElem.innerHTML = garmentsTemplate({
 				garments: result.data.garments
 			})
-		});
+		});s
 }
 
 priceRangeElem.addEventListener('change', function (evt) {

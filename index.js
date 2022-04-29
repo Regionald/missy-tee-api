@@ -14,30 +14,11 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors())
 
 
-// API routes to be added here
-// app.get('/api/garments', function(req, res){
-//     // note that this route just send JSON data to the browser
-//     // there is no template
-//     res.json({garments});
-// });
-
 function checkToken(req, res, next) {
 
-    const token =req.params.token
-    console.log(token)
-    // const token = req.body.token & req.body.token.split(" ")[1];
-
-    console.log(req.body.token);
-
-    // if (!req.headers.authorization || !token){
-    // 	res.sendStatus(401);
-    // 	return;
-    // }
-
-    // what do I need to do with the token ?
-
-    // unwrap the decode the token...
-    const decoded = jwt.verify(token, 'QueenPresident@Mmabatho');
+    const token =req.query.token;
+    console.log(token);
+    const decoded = jwt.verify(token,'QueenPresident@Mmabatho');
 
     // find the username in the token ?
     const { username } = decoded;
@@ -75,7 +56,7 @@ app.get('/api/garments', function (req, res) {
 });
 
 app.get('/api/login', function (req, res) {
-    var token = jwt.sign({ username: 'President'}, 'QueenPresident@Mmabatho');
+    var token = jwt.sign({ username: 'President'},'QueenPresident@Mmabatho');
     console.log(token)
 
     var decoded = jwt.decode(token);
@@ -87,24 +68,9 @@ app.get('/api/login', function (req, res) {
 });
 
 
-
-// note that this route just send JSON data to the browser
-// there is no template
-
-
-
-
-// app.get('/api/garments/price/:price', function(req, res){
-// const maxPrice = Number(req.params.price);
-// const filteredGarments = garments.filter( garment => {
-//     // filter only if the maxPrice is bigger than maxPrice
-//     if (maxPrice > 0) {
-//         return garment.price <= maxPrice;
-//     }
-//     return true;
-// });
-
-app.get('/api/garments/price/:price', function (req, res) {
+app.get('/api/garments/price/:price',checkToken, function (req, res) {
+    const token =req.query.token
+    console.log(token)
     const maxPrice = Number(req.params.price);
     const filteredGarments = garments.filter(garment => {
         // filter only if the maxPrice is bigger than maxPrice
@@ -130,9 +96,6 @@ app.post('/api/garments', (req, res) => {
         price
     } = req.body;
 
-    // add some validation to see if all the fields are there.
-    // only 3 fields are made mandatory here
-    // you can change that
 
     if (!description || !img || !price) {
         res.json({
@@ -160,35 +123,8 @@ app.post('/api/garments', (req, res) => {
 
 });
 
-
-
-//});
-
-// function filterData() {
-//     axios.get(`/api/garments?gender=${genderFilter}&season=${seasonFilter}`)
-//         .then(function(result) {
-//             searchResultsElem.innerHTML = garmentsTemplate({
-//                 garments : result.data.garments
-//             })
-//         });
-//     }
-
-
-// });
-
 const PORT = process.env.PORT || 4017;
 app.listen(PORT, function () {
     console.log(`App started on port ${PORT}`)
 
 });
-// var privateKey = fs.readFileSync('private.key');
-// jwt.sign({ foo: 'garments' }, privateKey, { algorithm: 'RS256' }, function(err, token) {
-//     console.log(token);
-//   });
-
-
-var token = jwt.sign({ foo: 'garments' }, 'shhhhh');
-console.log(token)
-
-var decoded = jwt.decode(token);
-console.log(decoded)
